@@ -1,7 +1,6 @@
-# Job Finder API
+# Job Finder
 
-A Job Finder API built for a Machine Learning Engineer assessment at GoAccelovate.  
-This RESTful API fetches job listings from various platforms, uses an AI model to analyze job descriptions, and delivers structured, personalized job recommendations.
+A Job Finder built to fetche job listings from various platforms, uses an AI model to analyze job descriptions, and delivers structured, personalized job recommendations.
 
 ## 🚀 Project Objective
 
@@ -14,11 +13,9 @@ To develop a system that:
 
 - **FastAPI** — for API services  
 - **Python** — core backend  
-- **jobspy** — job scraping  
-- **LangChain + Groq LLaMA** — LLM-powered job description analysis  
+- **LangChain** — LLM-powered job description analysis  
 - **Pandas** — data manipulation  
-- **HTML/CSS** — simple frontend  
-- **Railway** — for deployment  
+- **HTML/CSS** — simple frontend    
 
 ## 🔍 System Workflow
 
@@ -35,8 +32,4 @@ To develop a system that:
 ## 🎥 Demo Video
 
 [Watch Here](https://drive.google.com/file/d/1d1PkYSTr6zCbuyCnTIVJGRxBQIRLnMDS/view?usp=drive_link)
-
-## 🌐 Live API
-
-[Job Finder API (Deployed on Railway)](https://jobfinder.up.railway.app)
 
