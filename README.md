@@ -20,7 +20,7 @@ To develop a system that:
 ## 🔍 System Workflow
 
 1. User submits job search criteria via JSON or a web form.
-2. jobspy scrapes jobs based on selected platform(s).
+2. Scrapes jobs based on selected platform(s).
 3. Each job description is analyzed using an LLM.
 4. API returns structured JSON with:
    - Required Experience  
