@@ -40,10 +40,3 @@ To develop a system that:
 
 [Job Finder API (Deployed on Railway)](https://jobfinder.up.railway.app)
 
-## 📦 Installation & Usage
-
-Clone the repo:
-
-```bash
-git clone https://github.com/bitsphile15/job_finder.git
-cd job_finder
