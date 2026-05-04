@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Finder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a1a40;
+            margin-bottom: 30px;
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #6e8efb, #a777e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #1a1a40;
+            font-size: 1.1em;
+        }
+
+        select, input {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            background: #f8f9ff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #6e8efb;
+            box-shadow: 0 0 8px rgba(110, 142, 251, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #searchBtn {
+            background: linear-gradient(to right, #6e8efb, #a777e3);
+            color: white;
+        }
+
+        #resetBtn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        #saveCsvBtn {
+            background: linear-gradient(to right, #28c76f, #48dcca);
+            color: white;
+            margin: 20px auto;
+            display: none;
+        }
+
+        .scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            display: none;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: linear-gradient(to right, #6e8efb, #a777e3);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+
+        tr:hover {
+            background: #e6e9ff;
+            transition: background 0.2s;
+        }
+
+        .apply-link {
+            color: #6e8efb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .apply-link:hover {
+            text-decoration: underline;
+            color: #a777e3;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6e8efb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Job Finder</h1>
+            <form id="jobForm" class="form-container">
+                <div class="form-group">
+                    <label for="source">Source *</label>
+                    <select id="source" required>
+                        <option value="" disabled selected>Select Source</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Indeed">Indeed</option>
+                        <option value="Google Jobs">Google Jobs</option>
+                        <option value="Glassdoor">Glassdoor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="jobPosition">Job Position *</label>
+                    <input type="text" id="jobPosition" placeholder="e.g., Web Developer" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Experience (Years) *</label>
+                    <select id="experience" required>
+                        <option value="" disabled selected>Select Experience</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salary">Expected Salary (USD) *</label>
+                    <input type="number" id="salary" placeholder="e.g., 100000" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobNature">Job Nature *</label>
+                    <select id="jobNature" required>
+                        <option value="" disabled selected>Select Job Nature</option>
+                        <option value="Onsite">Onsite</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location *</label>
+                    <select id="location" required>
+                        <option value="" disabled selected>Select Location</option>
+                        <option value="Pakistan">Pakistan</option>
+                        <option value="India">India</option>
+                        <option value="UAE">UAE</option>
+                        <option value="USA">USA</option>
+                        <option value="Qatar">Qatar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="skills">Skills *</label>
+                    <input type="text" id="skills" placeholder="e.g., Full Stack, MERN" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobAge">Job Posted (Days) ago *</label>
+                    <input type="number" id="jobAge" placeholder="e.g., 10" required>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="searchBtn">Search</button>
+                    <button type="reset" id="resetBtn">Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading jobs...</p>
+        </div>
+
+        <div class="card">
+            <div class="scroll-container">
+                <table id="jobTable">
+                    <thead>
+                        <tr>
+                            <th>Sr.N</th>
+                            <th>Source</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Experience</th>
+                            <th>Job Nature</th>
+                            <th>Location</th>
+                            <th>Salary (Annula) Pkr</th>
+                            <th>Date Posted</th>
+                            <th>Apply Link</th>
+                            <th>Interest</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <button id="saveCsvBtn">Save as CSV</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('jobForm');
+        const table = document.getElementById('jobTable');
+        const tableBody = document.getElementById('tableBody');
+        const saveCsvBtn = document.getElementById('saveCsvBtn');
+        const loading = document.getElementById('loading');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                source: document.getElementById('source').value,
+                jobPosition: document.getElementById('jobPosition').value,
+                experience: document.getElementById('experience').value,
+                salary: document.getElementById('salary').value,
+                jobNature: document.getElementById('jobNature').value,
+                location: document.getElementById('location').value,
+                skills: document.getElementById('skills').value,
+                jobAge: document.getElementById('jobAge').value
+            };
+
+            try {
+                // Show loading spinner
+                loading.style.display = 'block';
+                table.style.display = 'none';
+                saveCsvBtn.style.display = 'none';
+
+                // Send JSON to backend
+                const response = await fetch('http://127.0.0.1:5000/api/search-jobs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const jobs = await response.json(); // API returns an array
+
+                // Clear existing table rows
+                tableBody.innerHTML = '';
+
+                // Populate table with API data
+                jobs.forEach((job, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${job.Source || 'N/A'}</td>
+                        <td>${job['Job title'] || 'N/A'}</td>
+                        <td>${job.Company || 'N/A'}</td>
+                        <td>${job.Experience || 'N/A'}</td>
+                        <td>${job['Job nature'] || 'N/A'}</td>
+                        <td>${job.Location || 'N/A'}</td>
+                        <td>${job.Salary || 'N/A'}</td>
+                        <td>${job['Date of Posted'] || 'N/A'}</td>
+                        <td><a href="${job['Apply_link'] || '#'}" class="apply-link" target="_blank">Apply</a></td>
+                        <td>${job.Interest || 'N/A'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Hide loading spinner and show table
+                loading.style.display = 'none';
+                table.style.display = 'table';
+                saveCsvBtn.style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching job data:', error);
+                loading.style.display = 'none';
+                alert('Failed to load job data. Please check if the backend server is running and try again.');
+            }
+        });
+
+        form.addEventListener('reset', () => {
+            table.style.display = 'none';
+            saveCsvBtn.style.display = 'none';
+            tableBody.innerHTML = '';
+            loading.style.display = 'none';
+        });
+
+        saveCsvBtn.addEventListener('click', () => {
+            const rows = Array.from(tableBody.children).map(row => {
+                return Array.from(row.children).map(cell => {
+                    return `"${cell.textContent.replace(/"/g, '""')}"`;
+                }).join(',');
+            });
+            const csv = ['Sr.N,Source,Job Title,Company,Experience,Job Nature,Location,Salary,Date Posted,Apply Link,Interest', ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'jobs.csv');
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
